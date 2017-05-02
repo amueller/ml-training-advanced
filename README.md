@@ -9,22 +9,20 @@ Instructor
 
 ---
 
-This repository will contain the teaching material and other info associated with the "Advanced Scikit-learn"
-course at [ODSC Masterclass 2017](https://odsc.com/masterclass) on March 2nd 2017.
+This repository will contain the teaching material and other info associated with the "Advanced Scikit-learn".
 
 
 Obtaining the Tutorial Material
 --------------------------------
 
-
 If you are familiar with git, it is probably most convenient if you clone the GitHub repository. This
 is highly encouraged as it allows you to easily synchronize any changes to the material.
 
 ```
-git clone https://github.com/amueller/odsc-masterclass-2017-morning.git
+git clone https://github.com/amueller/ml-training-advanced
 ```
 
-If you are not familiar with git, you can download the repository as a .zip file by heading over to the GitHub repository (https://github.com/amueller/scipy-2016-sklearn) in your browser and click the green “Download” button in the upper right.
+If you are not familiar with git, you can download the repository as a .zip file by heading over to the GitHub repository (https://github.com/amueller/ml-training-advanced) in your browser and click the green “Download” button in the upper right.
 
 ![](images/download-repo.png)
 
