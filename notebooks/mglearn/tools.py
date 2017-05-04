@@ -2,24 +2,56 @@ import numpy as np
 from sklearn.datasets import make_blobs
 from sklearn.tree import export_graphviz
 import matplotlib.pyplot as plt
-from .plot_2d_separator import plot_2d_separator, plot_2d_classification, plot_2d_scores
-from .plot_helpers import cm2 as cm
+from .plot_2d_separator import (plot_2d_separator, plot_2d_classification,
+                                plot_2d_scores)
+from .plot_helpers import cm2 as cm, discrete_scatter
 
 
 def visualize_coefficients(coefficients, feature_names, n_top_features=25):
+    """Visualize coefficients of a linear model.
+
+    Parameters
+    ----------
+    coefficients : nd-array, shape (n_features,)
+        Model coefficients.
+
+    feature_names : list or nd-array of strings, shape (n_features,)
+        Feature names for labeling the coefficients.
+
+    n_top_features : int, default=25
+        How many features to show. The function will show the largest (most
+        positive) and smallest (most negative)  n_top_features coefficients,
+        for a total of 2 * n_top_features coefficients.
+    """
+    coefficients = coefficients.squeeze()
+    if coefficients.ndim > 1:
+        # this is not a row or column vector
+        raise ValueError("coeffients must be 1d array or column vector, got"
+                         " shape {}".format(coefficients.shape))
+
+    if len(coefficients) != len(feature_names):
+        raise ValueError("Number of coefficients {} doesn't match number of"
+                         "feature names {}.".format(len(coefficients),
+                                                    len(feature_names)))
     # get coefficients with large absolute values
     coef = coefficients.ravel()
     positive_coefficients = np.argsort(coef)[-n_top_features:]
     negative_coefficients = np.argsort(coef)[:n_top_features]
-    interesting_coefficients = np.hstack([negative_coefficients, positive_coefficients])
+    interesting_coefficients = np.hstack([negative_coefficients,
+                                          positive_coefficients])
     # plot them
     plt.figure(figsize=(15, 5))
-    colors = ["red" if c < 0 else "blue" for c in coef[interesting_coefficients]]
-    plt.bar(np.arange(2 * n_top_features), coef[interesting_coefficients], color=colors)
+    colors = [cm(1) if c < 0 else cm(0)
+              for c in coef[interesting_coefficients]]
+    plt.bar(np.arange(2 * n_top_features), coef[interesting_coefficients],
+            color=colors)
     feature_names = np.array(feature_names)
     plt.subplots_adjust(bottom=0.3)
     plt.xticks(np.arange(1, 1 + 2 * n_top_features),
-               feature_names[interesting_coefficients], rotation=60, ha="right")
+               feature_names[interesting_coefficients], rotation=60,
+               ha="right")
+    plt.ylabel("Coefficient magnitude")
+    plt.xlabel("Feature")
 
 
 def heatmap(values, xlabel, ylabel, xticklabels, yticklabels, cmap=None,
@@ -37,7 +69,8 @@ def heatmap(values, xlabel, ylabel, xticklabels, yticklabels, cmap=None,
     ax.set_yticklabels(yticklabels)
     ax.set_aspect(1)
 
-    for p, color, value in zip(img.get_paths(), img.get_facecolors(), img.get_array()):
+    for p, color, value in zip(img.get_paths(), img.get_facecolors(),
+                               img.get_array()):
         x, y = p.vertices[:-2, :].mean(0)
         if np.mean(color[:3]) > 0.5:
             c = 'k'
@@ -57,7 +90,8 @@ def make_handcrafted_dataset():
     return X, y
 
 
-def print_topics(topics, feature_names, sorting, topics_per_chunk=6, n_words=20):
+def print_topics(topics, feature_names, sorting, topics_per_chunk=6,
+                 n_words=20):
     for i in range(0, len(topics), topics_per_chunk):
         # for each chunk:
         these_topics = topics[i: i + topics_per_chunk]
@@ -69,7 +103,8 @@ def print_topics(topics, feature_names, sorting, topics_per_chunk=6, n_words=20)
         # print top n_words frequent words
         for i in range(n_words):
             try:
-                print(("{:<14}" * len_this_chunk).format(*feature_names[sorting[these_topics, i]]))
+                print(("{:<14}" * len_this_chunk).format(
+                    *feature_names[sorting[these_topics, i]]))
             except:
                 pass
         print("\n")
@@ -87,5 +122,6 @@ def get_tree(tree, **kwargs):
     import graphviz
     return graphviz.Source(f.getvalue())
 
-__all__ = ['plot_2d_separator', 'plot_2d_classification',
-           'plot_2d_scores', 'cm', 'visualize_coefficients', 'print_topics', 'heatmap']
+__all__ = ['plot_2d_separator', 'plot_2d_classification', 'plot_2d_scores',
+           'cm', 'visualize_coefficients', 'print_topics', 'heatmap',
+           'discrete_scatter']

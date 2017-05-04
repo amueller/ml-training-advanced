@@ -1,9 +1,10 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from .plot_helpers import cm2
+from .plot_helpers import cm2, cm3, discrete_scatter
 
 
-def plot_2d_classification(classifier, X, fill=False, ax=None, eps=None, alpha=1, cm=None):
+def plot_2d_classification(classifier, X, fill=False, ax=None, eps=None,
+                           alpha=1, cm=cm3):
     # multiclass
     if eps is None:
         eps = X.std() / 2.
@@ -28,7 +29,8 @@ def plot_2d_classification(classifier, X, fill=False, ax=None, eps=None, alpha=1
     ax.set_yticks(())
 
 
-def plot_2d_scores(classifier, X, ax=None, eps=None, alpha=1, cm=None, function=None):
+def plot_2d_scores(classifier, X, ax=None, eps=None, alpha=1, cm="viridis",
+                   function=None):
     # binary with fill
     if eps is None:
         eps = X.std() / 2.
@@ -44,7 +46,8 @@ def plot_2d_scores(classifier, X, ax=None, eps=None, alpha=1, cm=None, function=
     X1, X2 = np.meshgrid(xx, yy)
     X_grid = np.c_[X1.ravel(), X2.ravel()]
     if function is None:
-        function = getattr(classifier, "decision_function", getattr(classifier, "predict_proba"))
+        function = getattr(classifier, "decision_function",
+                           getattr(classifier, "predict_proba"))
     else:
         function = getattr(classifier, function)
     decision_values = function(X_grid)
@@ -63,7 +66,8 @@ def plot_2d_scores(classifier, X, ax=None, eps=None, alpha=1, cm=None, function=
 
 
 def plot_2d_separator(classifier, X, fill=False, ax=None, eps=None, alpha=1,
-                      cm=cm2, linewidth=None, threshold=None):
+                      cm=cm2, linewidth=None, threshold=None,
+                      linestyle="solid"):
     # binary?
     if eps is None:
         eps = X.std() / 2.
@@ -73,15 +77,16 @@ def plot_2d_separator(classifier, X, fill=False, ax=None, eps=None, alpha=1,
 
     x_min, x_max = X[:, 0].min() - eps, X[:, 0].max() + eps
     y_min, y_max = X[:, 1].min() - eps, X[:, 1].max() + eps
-    xx = np.linspace(x_min, x_max, 100)
-    yy = np.linspace(y_min, y_max, 100)
+    xx = np.linspace(x_min, x_max, 1000)
+    yy = np.linspace(y_min, y_max, 1000)
 
     X1, X2 = np.meshgrid(xx, yy)
     X_grid = np.c_[X1.ravel(), X2.ravel()]
     try:
         decision_values = classifier.decision_function(X_grid)
         levels = [0] if threshold is None else [threshold]
-        fill_levels = [decision_values.min()] + levels + [decision_values.max()]
+        fill_levels = [decision_values.min()] + levels + [
+            decision_values.max()]
     except AttributeError:
         # no decision_function
         decision_values = classifier.predict_proba(X_grid)[:, 1]
@@ -93,7 +98,7 @@ def plot_2d_separator(classifier, X, fill=False, ax=None, eps=None, alpha=1,
     else:
         ax.contour(X1, X2, decision_values.reshape(X1.shape), levels=levels,
                    colors="black", alpha=alpha, linewidths=linewidth,
-                   linestyles="solid")
+                   linestyles=linestyle, zorder=5)
 
     ax.set_xlim(x_min, x_max)
     ax.set_ylim(y_min, y_max)
@@ -107,5 +112,5 @@ if __name__ == '__main__':
     X, y = make_blobs(centers=2, random_state=42)
     clf = LogisticRegression().fit(X, y)
     plot_2d_separator(clf, X, fill=True)
-    plt.scatter(X[:, 0], X[:, 1], c=y, s=60)
+    discrete_scatter(X[:, 0], X[:, 1], y)
     plt.show()
