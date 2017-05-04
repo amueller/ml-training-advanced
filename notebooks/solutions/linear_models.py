@@ -1,17 +1,17 @@
-from pprint import pprint
+import numpy as np
+import matplotlib.pyplot as plt
 
-from sklearn.grid_search import GridSearchCV
+from sklearn.model_selection import GridSearchCV, train_test_split
 from sklearn.datasets import load_digits
-from sklearn.cross_validation import train_test_split
 from sklearn.svm import LinearSVC
 
 digits = load_digits()
-X_train, X_test, y_train, y_test = train_test_split(digits.data, digits.target % 2)
+X_train, X_test, y_train, y_test = train_test_split(digits.data,
+                                                    digits.target % 2)
 
 grid = GridSearchCV(LinearSVC(), param_grid={'C': np.logspace(-6, 2, 9)}, cv=5)
 grid.fit(X_train, y_train)
-pprint(grid.grid_scores_)
-pprint(grid.score(X_test, y_test))
+grid.score(X_test, y_test)
 
 
 Cs = [10, 1, .01, 0.001, 0.0001]
