@@ -1,3 +1,8 @@
+mglearn improper processing plot needs matplotlib v2.0 update
+
+text data too slow?
+
+
 hashing vecorizer in out-of-core
 different text dataset for exercise?
 exercises everywhere?
