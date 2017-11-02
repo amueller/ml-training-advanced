@@ -48,6 +48,8 @@ This tutorial will require recent installations of
 - [scikit-learn](http://scikit-learn.org/stable/) (>=0.18.1)
 - [IPython](http://ipython.readthedocs.org/en/stable/)
 - [Jupyter Notebook](http://jupyter.org)
+- mlxtend
+- imbalance-learn
 
 The last one is important, you should be able to type:
 
