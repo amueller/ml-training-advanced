@@ -1,10 +1,13 @@
+Evaluation metrics broken?!
+
+
 fix mlxtend dependency?
 add xgboost dependency
 add imbalance learn dependency <----
 fix openml dependency in imbalanced data -> csv interface
 pca faces plot broken
 fancyimpute?
-create requirements file, add instructions to install using requirements file
+improve install instructions
 
 text data too slow?
 
@@ -38,7 +41,6 @@ extra topic modelling
 
 for next time
 --------------
-get rid of preamble and mglearn (maybe? maybe not?)
 add deep learning with keras to deep learning
 add gp back in
 gp exercise impossibly hard
