@@ -1,8 +1,7 @@
 Evaluation metrics broken?!
 
 
-fix mlxtend dependency?
-add xgboost dependency
+
 add imbalance learn dependency <----
 fix openml dependency in imbalanced data -> csv interface
 pca faces plot broken
