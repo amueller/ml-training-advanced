@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Reminder on Scikit-learn API</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="style.css">
+    <style>
+      @import url(https://fonts.googleapis.com/css?family=Garamond);
+      @import url(https://fonts.googleapis.com/css?family=Muli:400,700,400italic);
+      @import url(https://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700,400italic);
+    </style>
+  </head>
+  <body>
+    <textarea id="source">
+
+class: center, middle
+
+![:scale 40%](images/sklearn_logo.png)
+
+
+### Advanced Machine Learning with scikit-learn Part I/II
+
+# Reminder: Scikit-learn API
+
+Andreas C. Müller
+
+Columbia University, scikit-learn
+
+.smaller[https://github.com/amueller/ml-workshop-3-of-4]
+
+
+---
+
+class: center
+
+# scikit-learn documentation
+![:scale 60%](images/sklearn-docs.png)
+
+---
+
+# Other Resources
+
+.center[
+![:scale 25%](images/PDSH.png)&nbsp;&nbsp;&nbsp;
+![:scale 25%](images/imlp.png)&nbsp;&nbsp;&nbsp;
+![:scale 25%](images/esl.png)
+]
+Lecture: http://www.cs.columbia.edu/~amueller/comsw4995s18/schedule/
+
+
+Videos and more slides!
+---
+class: center
+
+# Representing Data
+
+![:scale 100%](images/matrix-representation.png)
+
+---
+class: center
+
+# Supervised ML Workflow
+
+![:scale 100%](images/supervised-ml-api.png)
+
+---
+# KNN with scikit-learn
+
+```python
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(X, y)
+
+from sklearn.neighbors import KNeighborsClassifier
+knn = KNeighborsClassifier(n_neighbors=1)
+knn.fit(X_train, y_train)
+print("accuracy: {:.2f}".format(knn.score(X_test, y_test)))
+y_pred = knn.predict(X_test)
+```
+accuracy: 0.77
+
+???
+
+---
+class: center, middle
+
+# Sckit-Learn API Summary
+
+![:scale 80%](images/api-table.png)
+
+---
+class: center, spacious
+# Overfitting and Underfitting
+
+![:scale 80%](images/overfitting_underfitting_cartoon_full.png)
+
+???
+If we use too simple a model, this is often called underfitting, while
+if we use to complex a model, this is called overfitting. And somewhere
+in the middle is a sweet spot.
+Most models have some way to tune model complexity, and we’ll see many
+of them in the next couple of weeks.
+So going back to nearest neighbors, what parameters correspond to high
+model complexity and what to low model complexity? high n_neighbors =
+low complexity!
+---
+
+class: center, some-space
+# Cross-validation + test set
+
+![:scale 70%](images/grid_search_cross_validation.png)
+
+???
+Here is how the workflow looks like when we are using five-fold
+cross-validation together with a test-set split for adjusting parameters.
+We start out by splitting of the test data, and then we perform
+cross-validation on the training set.
+Once we found the right setting of the parameters, we retrain on the
+whole training set and evaluate on the test set.
+---
+# GridSearchCV
+.smaller[
+```python
+from sklearn.model_selection import GridSearchCV
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, stratify=y)
+
+
+param_grid = {'n_neighbors':  np.arange(1, 15, 2)}
+
+grid = GridSearchCV(KNeighborsClassifier(), param_grid=param_grid, cv=10)
+grid.fit(X_train, y_train)
+
+print("best mean cross-validation score: {:.3f}".format(grid.best_score_))
+print("best parameters:", grid.best_params_))
+
+print("test-set score: {:.3f}".format(grid.score(X_test, y_test)))
+```
+
+```
+best mean cross-validation score: 0.967
+best parameters: {'n_neighbors': 9}
+test-set score: 0.993
+```
+]
+???
+Here is an example.
+We still need to split our data into training and test set.
+We declare the parameters we want to search over as a dictionary. In
+this example the parameter is just n_neighbors and the values we want
+to try out are a range. The keys of the dictionary are the parameter
+names and the values are the parameter settings we want to try. If you
+specify multiple parameters, all possible combinations are tried. This
+is where the name grid-search comes from - it’s an exhaustive search
+over all possible parameter combinations that you specify.
+
+GridSearchCV is a class, and it behaves just like any other model in
+scikit-learn, with a fit, predict and score method.
+It’s what we call a meta-estimator, since you give it one estimator,
+here the KneighborsClassifier, and from that GridSearchCV constructs a
+new estimator that does the parameter search for you.
+You also specify the parameters you want to search, and the
+cross-validation strategy.
+Then GridSearchCV does all the other things we talked about, it does the
+cross-validation and parameter selection, and retrains a model with the
+best parameter settings that were found.
+We can check out the best cross-validation score and the best parameter
+setting with the best_score_ and best_params_ attributes.
+And finally we can compute the accuracy on the test set, simply but
+using the score method! That will use the retrained model under the hood.
+
+
+    </textarea>
+    <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    <script>
+    // Config Remark
+    remark.macros['scale'] = function (percentage) {
+        var url = this;
+        return '<img src="' + url + '" style="width: ' + percentage + '" />';
+    };
+    config_remark = {
+        highlightStyle: 'github',
+        highlightSpans: true,
+        highlightLines: true,
+        ratio: "16:9"
+    };
+      var slideshow = remark.create(config_remark);
+
+    // Configure MathJax
+    MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'] /* removed 'code' entry*/
+    }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i = 0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+    </script>
+  </body>
+</html>
