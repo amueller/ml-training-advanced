@@ -13,6 +13,15 @@ This repository will contain the teaching material and other info associated wit
 
 Please download the Large Movie Review dataset from http://ai.stanford.edu/~amaas/data/sentiment/ before coming to the workshop!
 
+Content
+-------
+- [Reminder: Scikit-learn API](https://amueller.github.io/ml-training-advanced/slides/01-reminder-sklearn-api.html)
+- [Pipelines](https://amueller.github.io/ml-training-advanced/slides/02-pipelines.html)
+- [Model Evaluation](https://amueller.github.io/ml-training-advanced/slides/03-model-evaluation.html)
+- [Imbalanced Data](https://amueller.github.io/ml-training-advanced/slides/04-imbalanced-data.html)
+- [Text Data](https://amueller.github.io/ml-training-advanced/slides/05-working-with-text-data.html)
+
+
 
 Obtaining the Tutorial Material
 --------------------------------
